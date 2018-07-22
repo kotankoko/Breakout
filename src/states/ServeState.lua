@@ -30,7 +30,7 @@ function ServeState:enter(params)
     self.ball = tBall['ball']
     self.ball.skin = math.random(7)
 
-    --init powerup
+    --init powerupp
     Powerup:reset()
 
 end
