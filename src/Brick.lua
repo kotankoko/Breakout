@@ -147,6 +147,10 @@ function Brick:render()
             -- to draw the correct tier and color brick onto the screen
             gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
             self.x, self.y)
+        -- if lockedBrick == true then
+        --     love.graphics.draw(gTextures['main'],gFrames['lockedbrick'][1],
+        --     VIRTUAL_WIDTH / 10, VIRTUAL_HEIGHT / 2)
+        -- end
     end
 end
 

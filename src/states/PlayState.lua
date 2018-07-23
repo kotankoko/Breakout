@@ -23,20 +23,29 @@ PlayState = Class{__includes = BaseState}
 function PlayState:enter(params)
     self.paddle = params.paddle
     self.bricks = params.bricks
+    self.locked = params.locked
     self.health = params.health
     self.score = params.score
     self.highScores = params.highScores
     self.ball = params.ball
+    self.lockedB = LockedBrick()
+
+    -- create table of balls
+    -- self.balls = params.ball
+--     self.balls = {
+--         ['ball'] = Ball(),
+--         ['ball2'] = Ball(),
+--         ['ball3'] = Ball()
+-- }
+
     self.level = params.level
 
     -- init powerup
     self.powerup = Powerup()
+    powerupRandomized = false
 
     -- init ball count
     spawnBalls = 1
-
-    -- make health global
-    pHealth = self.health
 
     self.recoverPoints = 5000
 
@@ -59,13 +68,34 @@ function PlayState:update(dt)
         return
     end
 
+    if self.health == 3 then
+        self.paddle.width = 64
+        self.paddle.size = 2
+    elseif self.health == 2 then
+        self.paddle.width = 96
+        self.paddle.size = 3
+    elseif self.health == 1 then
+        self.paddle.width = 128
+        self.paddle.size = 4
+    end
+    if self.score > 1000 and self.health == 3 then
+        self.paddle.width = 32
+        self.paddle.size = 1
+    elseif self.score > 1000 and self.health == 2 then
+        self.paddle.width = 64
+        self.paddle.size = 2
+    elseif self.score > 1000 and self.health == 1 then
+        self.paddle.width = 96
+        self.paddle.size = 3
+    end
+
     -- update positions based on velocity
     self.paddle:update(dt)
     self.ball:update(dt)
 
-    for k,v in pairs(tBall) do
-        tBall[k]:update(dt)
-    end
+    -- for k, v in pairs(self.balls) do
+    --     self.balls[k]:update(dt)
+    -- end
 
     if self.ball:collides(self.paddle) then
         -- raise ball above paddle in case it goes below it, then reverse dy
@@ -95,6 +125,47 @@ function PlayState:update(dt)
         self.powerup:pickup(self.paddle)
         if self.powerup.y >= VIRTUAL_HEIGHT - self.powerup.height then
             self.powerup:reset()
+        end
+    end
+
+    if self.lockedB.inPlay == true and haveKey == true and self.ball:collides(self.lockedB) then
+        self.score = self.score + 9000
+        self.lockedB:hit()
+    end
+
+    if self.ball:collides(self.lockedB) then
+        if self.ball.x + 2 < self.lockedB.x and self.ball.dx > 0 then
+                
+        -- flip x velocity and reset position outside of brick
+        self.ball.dx = -self.ball.dx
+        self.ball.x = self.lockedB.x - 8
+            
+        -- right edge; only check if we're moving left, , and offset the check by a couple of pixels
+        -- so that flush corner hits register as Y flips, not X flips
+        elseif self.ball.x + 6 > self.lockedB.x + self.lockedB.width and self.ball.dx < 0 then
+            
+            -- flip x velocity and reset position outside of brick
+            self.ball.dx = -self.ball.dx
+            self.ball.x = self.lockedB.x + 32
+        
+        -- top edge if no X collisions, always check
+        elseif self.ball.y < self.lockedB.y then
+            
+            -- flip y velocity and reset position outside of brick
+            self.ball.dy = -self.ball.dy
+            self.ball.y = self.lockedB.y - 8
+        
+        -- bottom edge if no X collisions or top collision, last possibility
+        else
+            
+            -- flip y velocity and reset position outside of brick
+            self.ball.dy = -self.ball.dy
+            self.ball.y = self.lockedB.y + 16
+        end
+
+        -- slightly scale the y velocity to speed up the game, capping at +- 150
+        if math.abs(self.ball.dy) < 150 then
+            self.ball.dy = self.ball.dy * 1.02
         end
     end
 
@@ -132,7 +203,7 @@ function PlayState:update(dt)
                     health = self.health,
                     score = self.score,
                     highScores = self.highScores,
-                    ball = self.ball,
+                    ball = self.balls,
                     recoverPoints = self.recoverPoints
                 })
             end
@@ -231,32 +302,29 @@ function PlayState:render()
         brick:renderParticles()
     end
 
+    self.lockedB:render()
     self.paddle:render()
     self.ball:render()
 
-    -- for k,v in pairs(tBall) do
-    --     tBall[k]:render()
+    -- for k, v in pairs(self.balls) do
+    --     self.balls[k]:render()
     -- end
 
     -- use counter to check if we need to render powerup
     if hitCounter == 3 then
+        if powerupRandomized == false then
+            self.powerup.randomPowerup = math.random(2)
+            if haveKey == true and self.lockedB.inPlay == true then
+                self.powerup.randomPowerup = 1
+            end
+            if haveKey == false and self.lockedB.inPlay == false then
+                self.powerup.randomPowerup = 1
+            end
+            powerupRandomized = true
+        end
         powerupInPlay = true
         self.powerup:render()
     end
-
-    -- if spawnBalls == 1 then
-    --     self.ball:render()
-    -- end
-    -- if spawnBalls == 2 then
-    --     for key, value in pairs(tBall) do
-    --         Ball.render()
-    --     end
-    -- end
-    -- if spawnBalls == 3 then
-    --     for key, value in pairs(tBall) do
-    --         Ball:render()
-    --     end
-    -- end
 
     renderScore(self.score)
     renderHealth(self.health)
@@ -275,6 +343,10 @@ function PlayState:checkVictory()
         if brick.inPlay then
             return false
         end 
+    end
+
+    if self.lockedB.inPlay == true then
+        return false
     end
 
     return true

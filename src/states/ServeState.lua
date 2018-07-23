@@ -20,6 +20,7 @@ function ServeState:enter(params)
     -- grab game state from params
     self.paddle = params.paddle
     self.bricks = params.bricks
+    self.locked = params.locked
     self.health = params.health
     self.score = params.score
     self.highScores = params.highScores
@@ -27,10 +28,16 @@ function ServeState:enter(params)
     self.recoverPoints = params.recoverPoints
 
     -- init new ball (random color for fun)
-    self.ball = tBall['ball']
+    self.ball = Ball()
     self.ball.skin = math.random(7)
 
-    --init powerupp
+    -- make health global
+    -- pHealth = self.health
+
+    --make score global
+    -- pScore = self.score
+
+    --init powerup
     Powerup:reset()
 
 end
@@ -46,6 +53,7 @@ function ServeState:update(dt)
         gStateMachine:change('play', {
             paddle = self.paddle,
             bricks = self.bricks,
+            locked = self.locked,
             health = self.health,
             score = self.score,
             highScores = self.highScores,

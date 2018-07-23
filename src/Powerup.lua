@@ -6,7 +6,10 @@ Powerup = Class{}
 function Powerup:init()
 	self.x = VIRTUAL_WIDTH / 2
 	self.y = VIRTUAL_HEIGHT / 3
-	self.randomPowerup = math.random(1)
+	
+	self.randomPowerup = nil
+
+	self.paddle = Paddle()
 
 	self.width = 16
 	self.height = 16
@@ -36,11 +39,14 @@ function Powerup:pickup(target)
 	self.x = VIRTUAL_WIDTH / 2
 	self.y = VIRTUAL_HEIGHT / 3
 
-    powerupInPlay = false
-    hitCounter = 0
-    spawnBalls = 3
-    tBall['ball2'] = Ball()
-    tBall['ball3'] = Ball()
+	powerupInPlay = false
+	powerupRandomized = false
+	hitCounter = 0
+	if self.randomPowerup == 1 then
+    	spawnBalls = 3
+	elseif self.randomPowerup == 2 then
+		haveKey = true
+	end
     return true
 end
 
@@ -50,16 +56,22 @@ function Powerup:reset()
 
     powerupInPlay = false
     hitCounter = 0
-    table.remove(tBall, 2)
-    table.remove(tBall, 3)
 end
 
 function Powerup:update(dt)
-	self.y = self.y + self.dy * dt
+	if self.randomPowerup == 1 then
+		self.y = self.y + self.dy * dt
+	elseif self.randomPowerup == 2 then
+		if self.y < self.paddle.y-8 then
+		self.y = self.y + self.dy * dt
+		elseif self.y > self.paddle.y then
+			self.y = self.paddle.y - 8
+		end
+	end
 end
 
 function Powerup:render()
 	if powerupInPlay == true then
-		love.graphics.draw(gTextures['main'], gFrames['powerups'] [1], self.x, self.y)
+		love.graphics.draw(gTextures['main'], gFrames['powerups'] [self.randomPowerup], self.x, self.y)
 	end
 end

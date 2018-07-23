@@ -40,6 +40,9 @@ function LevelMaker.createMap(level)
     local numCols = math.random(7, 13)
     numCols = numCols % 2 == 0 and (numCols + 1) or numCols
 
+    -- global randomly choose will we spawn locked brick
+    -- lockedBrick = math.random(2) == 1 and true or false
+
     -- highest possible spawned brick color in this level; ensure we
     -- don't go above 3
     local highestTier = math.min(3, math.floor(level / 5))
@@ -117,7 +120,13 @@ function LevelMaker.createMap(level)
             -- Lua's version of the 'continue' statement
             ::continue::
         end
-    end 
+    end
+
+        
+    -- if lockedBrick == true then
+    --     l = Brick(VIRTUAL_WIDTH / 10, VIRTUAL_HEIGHT / 2)
+    --     table.insert(bricks, l)
+    -- end 
 
     -- in the event we didn't generate any bricks, try again
     if #bricks == 0 then

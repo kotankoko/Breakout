@@ -22,6 +22,8 @@ function PaddleSelectState:init()
     -- the paddle we're highlighting; will be passed to the ServeState
     -- when we press Enter
     self.currentPaddle = 1
+
+    LB = math.random(2) == 1 and true or false
 end
 
 function PaddleSelectState:update(dt)
@@ -48,6 +50,7 @@ function PaddleSelectState:update(dt)
         gStateMachine:change('serve', {
             paddle = Paddle(self.currentPaddle),
             bricks = LevelMaker.createMap(32),
+            locked = LB,
             health = 3,
             score = 0,
             highScores = self.highScores,

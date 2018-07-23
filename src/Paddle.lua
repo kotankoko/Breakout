@@ -74,16 +74,4 @@ end
 function Paddle:render()
     love.graphics.draw(gTextures['main'], gFrames['paddles'][self.size + 4 * (self.skin - 1)],
     self.x, self.y)
-    -- if pHealth == 3 then
-    --     love.graphics.draw(gTextures['main'], gFrames['paddles'][self.size + 4 * (self.skin - 1)],
-    --     self.x, self.y)
-    -- end
-    -- if pHealth == 2 then
-    --     love.graphics.draw(gTextures['main'], gFrames['paddles'][self.size + 1 + 4 * (self.skin - 1)],
-    --     self.x, self.y)
-    -- end
-    -- if pHealth == 1 then
-    --     love.graphics.draw(gTextures['main'], gFrames['paddles'][self.size + 2 + 4 * (self.skin - 1)],
-    --     self.x, self.y)
-    -- end
 end
