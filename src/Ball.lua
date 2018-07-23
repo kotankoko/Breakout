@@ -17,17 +17,14 @@ Ball = Class{}
 
 function Ball:init(skin)
 
-    -- self.paddle = Paddle()
+    self.paddle = Paddle()
 
     -- simple positional and dimensional variables
     self.width = 8
     self.height = 8
 
-    self.x = 0
-    self.y = 0
-
-    -- self.x = self.paddle.x + (self.paddle.width / 2) - 4
-    -- self.y = self.paddle.y - 8
+    self.x = self.paddle.x + (self.paddle.width / 2) - 4
+    self.y = self.paddle.y - 8
 
     -- these variables are for keeping track of our velocity on both the
     -- X and Y axis, since the ball can move in two dimensions

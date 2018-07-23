@@ -23,6 +23,7 @@ function PaddleSelectState:init()
     -- when we press Enter
     self.currentPaddle = 1
 
+    -- will we spawn lockedblock
     LB = math.random(2) == 1 and true or false
 end
 

@@ -122,12 +122,6 @@ function LevelMaker.createMap(level)
         end
     end
 
-        
-    -- if lockedBrick == true then
-    --     l = Brick(VIRTUAL_WIDTH / 10, VIRTUAL_HEIGHT / 2)
-    --     table.insert(bricks, l)
-    -- end 
-
     -- in the event we didn't generate any bricks, try again
     if #bricks == 0 then
         return self.createMap(level)

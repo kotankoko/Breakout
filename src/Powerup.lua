@@ -10,6 +10,8 @@ function Powerup:init()
 	self.randomPowerup = nil
 
 	self.paddle = Paddle()
+	self.ball = Ball()
+	self.balls = tBalls
 
 	self.width = 16
 	self.height = 16
@@ -43,7 +45,18 @@ function Powerup:pickup(target)
 	powerupRandomized = false
 	hitCounter = 0
 	if self.randomPowerup == 1 then
-    	spawnBalls = 3
+    	tBalls[1] = Ball()
+    	tBalls[2] = Ball()
+    	tBalls[3] = Ball()
+    	self.balls[1].skin = math.random(7)
+    	self.balls[1].dx = math.random(-200, 200)
+    	self.balls[1].dy = math.random(-50, -60)
+    	self.balls[2].dx = math.random(-200, 200)
+    	self.balls[2].dy = math.random(-50, -60)
+    	self.balls[2].skin = math.random(7)
+    	self.balls[3].dx = math.random(-200, 200)
+    	self.balls[3].dy = math.random(-50, -60)
+    	self.balls[3].skin = math.random(7)
 	elseif self.randomPowerup == 2 then
 		haveKey = true
 	end

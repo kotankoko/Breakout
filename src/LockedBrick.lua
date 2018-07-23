@@ -10,7 +10,9 @@ function LockedBrick:init()
 	self.width = 32
     self.height = 16
 
-	self.inPlay = true
+    if LB == true then
+        self.inPlay = true
+    end
 end
 
 function LockedBrick:hit()
